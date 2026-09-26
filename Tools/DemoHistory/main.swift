@@ -30,7 +30,7 @@ let demos: [Demo] = [
          app: "DataGrip", minutesAgo: 14),
     Demo(text: "/Users/me/Library/Application Support/com.local.paste/items", app: "访达", minutesAgo: 18),
     Demo(text: "{\"name\":\"paste\",\"version\":\"0.1.0\",\"private\":true}", app: "VS Code", minutesAgo: 23),
-    Demo(text: "hdxlonger@126.com", app: "邮件", minutesAgo: 31),
+    Demo(text: "hello@example.com", app: "邮件", minutesAgo: 31),
     Demo(text: "npm run build --filter web", app: "Terminal", minutesAgo: 38),
     Demo(text: "#4A90D9", app: "Figma", minutesAgo: 45),
     Demo(text: "会议改到周四下午三点，会议室换到 12 楼", app: "微信", minutesAgo: 52),

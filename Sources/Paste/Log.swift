@@ -31,7 +31,11 @@ enum Log {
                 Bundle.main.bundleIdentifier ?? "com.local.paste",
                 isDirectory: true
             )
-            try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            try? FileManager.default.createDirectory(
+                at: directory,
+                withIntermediateDirectories: true,
+                attributes: [.posixPermissions: 0o700]
+            )
             path = directory.appendingPathComponent("paste.log").path
         }
 
@@ -44,6 +48,10 @@ enum Log {
         }
 
         FileManager.default.createFile(atPath: path, contents: nil)
+        // 日志里会记剪贴板条目的片段，同样收紧到只有本人可读
+        try? FileManager.default.setAttributes(
+            [.posixPermissions: 0o600], ofItemAtPath: path
+        )
         guard let handle = FileHandle(forWritingAtPath: path) else { return nil }
         handle.seekToEndOfFile()
         return handle

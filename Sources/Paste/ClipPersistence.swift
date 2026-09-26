@@ -15,10 +15,31 @@ final class ClipPersistence {
         self.directory = directory
         encoder.outputFormat = .binary
         do {
-            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            // 0700：剪贴板历史里可能有密码、token、私人对话，
+            // 默认的 0755 会让同机其他用户也能读。
+            try FileManager.default.createDirectory(
+                at: directory,
+                withIntermediateDirectories: true,
+                attributes: [.posixPermissions: 0o700]
+            )
+            // 目录可能早就存在（旧版本建的、权限是 0755），补一次；
+            // 父目录（com.local.paste 本身）也要收紧，否则别人能列出
+            // 「里面有几个文件」这种元信息。
+            for url in [directory, directory.deletingLastPathComponent()] {
+                try? FileManager.default.setAttributes(
+                    [.posixPermissions: 0o700], ofItemAtPath: url.path
+                )
+            }
         } catch {
             Log.info("无法创建历史目录：\(error.localizedDescription)")
         }
+    }
+
+    /// 把文件权限收紧到只有本人可读写。
+    private func restrict(_ url: URL) {
+        try? FileManager.default.setAttributes(
+            [.posixPermissions: 0o600], ofItemAtPath: url.path
+        )
     }
 
     /// 默认位置。拿不到 Application Support 时返回 nil（此时退化成不持久化，功能仍可用）。
@@ -45,6 +66,8 @@ final class ClipPersistence {
         var loaded: [ClipItem] = []
         for name in names where name.hasSuffix(".plist") {
             let url = directory.appendingPathComponent(name)
+            // 迁移：旧版本留下的文件是 0644，读的时候顺手收紧
+            restrict(url)
             guard let data = try? Data(contentsOf: url) else { continue }
 
             if let item = try? decoder.decode(ClipItem.self, from: data) {
@@ -63,6 +86,7 @@ final class ClipPersistence {
         do {
             let data = try encoder.encode(item)
             try data.write(to: url, options: .atomic)
+            restrict(url)
         } catch {
             Log.info("保存历史失败：\(error.localizedDescription)")
         }

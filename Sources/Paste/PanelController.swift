@@ -188,11 +188,18 @@ final class PanelController {
         let list = store.filteredItems
         let index = list.firstIndex { $0.id == item.id } ?? -1
 
-        // 记下到底提交了哪一条。「选第 10 条却粘出别的」这类问题，
-        // 没有这行日志就只能靠猜。
-        let flat = item.preview.replacingOccurrences(of: "\n", with: " ")
-        let short = flat.count > 24 ? String(flat.prefix(24)) + "…" : flat
-        Log.info("提交 index=\(index)（共 \(list.count) 条）：\(item.kind.rawValue)「\(short)」")
+        // 记下到底提交了哪一条 —— 但**默认不记内容**。
+        //
+        // 「选第 10 条却粘出别的」这类问题需要知道内容才能定位，可剪贴板里
+        // 可能是密码、token、私人对话，日志文件不该长期留这些。
+        // 需要排查时用 PASTE_DEBUG_LOG_CONTENT=1 启动，才会记前 24 字。
+        if DebugFlags.logContent {
+            let flat = item.preview.replacingOccurrences(of: "\n", with: " ")
+            let short = flat.count > 24 ? String(flat.prefix(24)) + "…" : flat
+            Log.info("提交 index=\(index)（共 \(list.count) 条）：\(item.kind.rawValue)「\(short)」")
+        } else {
+            Log.info("提交 index=\(index)（共 \(list.count) 条）：\(item.kind.rawValue) \(item.totalBytes) 字节")
+        }
 
         // 需要时把「按回车那一瞬间的面板」存下来，
         // 用来核对高亮的行和提交的条目是否一致。
