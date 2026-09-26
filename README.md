@@ -4,6 +4,15 @@
 
 macOS 剪贴板历史工具。按 **Ctrl+V** 呼出面板，搜一下、挑一条，**自动粘到原来的位置**。
 
+<p>
+<img src="screenshots/panel.png" width="46%" alt="剪贴板历史面板">
+&nbsp;
+<img src="screenshots/search.png" width="46%" alt="输入即搜索">
+</p>
+
+左列的大号数字用来确认「第几条是哪一条」；输入即搜索，右上是命中数。
+截图里是合成的演示数据（生成脚本在 `Tools/DemoHistory/`），不是真实剪贴板内容。
+
 当前是 **V3**：多类型 + 持久化 + 搜索 + 开机自启。
 
 ---
@@ -354,6 +363,7 @@ Sources/Paste/
   Log.swift                   日志 + 调试开关
 Tools/
   LogicTest/main.swift        全部逻辑断言
+  DemoHistory/main.swift      生成 README 截图用的演示历史
   make_icon.swift             程序化生成 App 图标（可出变体对比图和小尺寸检查图）
   pasteboard_probe.swift      往剪贴板塞 文本/图片/多文件/伪装密码 内容
 ```
@@ -492,6 +502,10 @@ open /Applications/Paste.app
 - 没有做加密，历史以明文 plist 存在磁盘上。
 - 开机自启注册的是启动时的那个 bundle 路径，所以务必先用 `install` 装到
   `/Applications` 再开启。
+
+## 许可
+
+[MIT](LICENSE)
 
 ### 一个容易忽略的权限细节
 
