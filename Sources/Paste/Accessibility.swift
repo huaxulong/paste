@@ -4,7 +4,8 @@ import ApplicationServices
 /// 「辅助功能」权限。
 ///
 /// 只有**自动粘贴**需要它（合成 Cmd+V 会被系统拦下）。
-/// 全局热键走的是 Carbon，不需要权限 —— 这是 V0 能零权限运行的原因。
+/// 全局热键走的是 Carbon，不需要任何权限；只有合成按键才需要「辅助功能」。
+/// 所以没授权时应用依然可用，只是粘贴那一步要你自己按 Cmd+V。
 enum Accessibility {
     static var isTrusted: Bool { AXIsProcessTrusted() }
 
