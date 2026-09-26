@@ -1,0 +1,11 @@
+# 构建产物
+.build/
+Paste.app/
+dist/
+Paste.iconset/
+
+# 系统
+.DS_Store
+
+# 日志
+*.log

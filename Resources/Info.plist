@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>zh_CN</string>
+	<key>CFBundleExecutable</key>
+	<string>Paste</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.local.paste</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Paste</string>
+	<key>CFBundleDisplayName</key>
+	<string>Paste</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>13.0</string>
+	<key>LSUIElement</key>
+	<true/>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<!-- 关掉 App Nap。Paste 是后台常驻、永不激活的 .accessory 应用，
+	     macOS 会节流它的渲染：模型状态已经变了，画面却要等到下一个
+	     事件才更新 —— 表现为「方向键选到第 4 条，粘出来却是第 5 条」。 -->
+	<key>NSAppSleepDisabled</key>
+	<true/>
+</dict>
+</plist>
