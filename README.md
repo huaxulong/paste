@@ -546,6 +546,30 @@ open /Applications/Paste.app
 为什么 `strip` 必须在签名之前、为什么 dmg 压缩格式试过更小的却没用。
 每条都是实测踩出来的，附原始报错信息。
 
+## 卸载
+
+```bash
+./uninstall.sh --dry-run   # 先看会删什么
+./uninstall.sh             # 卸载（保留剪贴板历史）
+./uninstall.sh --purge     # 连历史、偏好、签名证书一起清干净
+```
+
+**卸载不只是删 `.app`。** 这个应用在系统里留下了六处痕迹：
+
+| 位置 | 是什么 | 删 `.app` 会自动清掉吗 |
+|---|---|---|
+| `/Applications/Paste.app` | 应用本体 | — |
+| 后台任务数据库（BTM） | 开机自启项 | ❌ 不会，要调应用自己的接口注销 |
+| `~/Library/Application Support/com.local.paste/` | 剪贴板历史 + 日志 | ❌ 不会 |
+| `defaults` 里的 `com.local.paste` | 偏好设置 | ❌ 不会 |
+| TCC 数据库 | 「辅助功能」授权 | ❌ 不会，会留一个指向已删应用的条目 |
+| 登录钥匙串 | 自签名证书 | ❌ 不会 |
+
+脚本按依赖顺序处理：**先注销自启项、再删应用**——因为注销要用到应用自己的二进制
+（`PASTE_DEBUG_LOGIN_ITEM=disable`），删了就没法调了。
+
+默认**保留剪贴板历史**（`--purge` 才删），免得手滑清掉。
+
 ## 许可
 
 [MIT](LICENSE)
