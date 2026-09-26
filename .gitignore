@@ -9,3 +9,6 @@ Paste.iconset/
 
 # 日志
 *.log
+
+# 本机自签名证书的公钥（可随时用 setup-signing-cert.sh 重新导出）
+Resources/Paste-Self-Signed.pem

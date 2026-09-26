@@ -134,7 +134,25 @@ if [ -z "$(find_identity)" ]; then
 fi
 find_identity | sed 's/^/    /'
 
+# 把公钥导出到固定位置，方便需要时加「系统域」信任（见下）
+EXPORT_DIR="$(cd "$(dirname "$0")" && pwd)/Resources"
+mkdir -p "$EXPORT_DIR"
+if cp "$WORK/cert.pem" "$EXPORT_DIR/Paste-Self-Signed.pem" 2>/dev/null; then
+  echo "    公钥已导出: Resources/Paste-Self-Signed.pem"
+fi
+
 echo
 echo "现在执行 ./build.sh，它会自动发现并使用这个证书。"
 echo
 echo "要删掉： ./setup-signing-cert.sh --remove"
+echo
+echo "—— 可选：让授权不受重新编译影响 ——"
+echo "上面的信任写在**用户域**。如果发现「辅助功能」授权在重新编译后仍然失效，"
+echo "说明校验签名的进程（tccd 以 root 运行）看不到用户域，需要把信任提到系统域："
+echo
+echo "  sudo security add-trusted-cert -d -r trustRoot -p codeSign \\"
+echo "    -k /Library/Keychains/System.keychain \\"
+echo "    \"$EXPORT_DIR/Paste-Self-Signed.pem\""
+echo
+echo "代价：这张自签名证书会进入系统级信任链，任何用它的私钥签的代码都会被信任。"
+echo "私钥目前只授权给 /usr/bin/codesign 使用。"

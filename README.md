@@ -159,6 +159,24 @@ macOS 会认为这是一个全新的 App**，之前勾选的「辅助功能」�
 - 可重复执行，已就绪就跳过；如果上次在「导入成功、设信任」之间中断，
   重跑只补信任而不会重复导入（避免出现两张同名证书）
 
+### 如果授权在重新编译后仍然失效
+
+上面的信任写在**用户域**。实测中它足够让 `codesign` 和授权都稳定；但如果发现
+重新编译后授权依旧失效，说明校验签名的进程（`tccd` 以 root 运行）看不到用户域，
+需要把信任提到**系统域**：
+
+```bash
+sudo security add-trusted-cert -d -r trustRoot -p codeSign \
+  -k /Library/Keychains/System.keychain \
+  Resources/Paste-Self-Signed.pem
+```
+
+公钥由 `setup-signing-cert.sh` 自动导出到 `Resources/Paste-Self-Signed.pem`
+（该文件已 gitignore，不进仓库）。
+
+> ⚠️ 代价：这会把一张自签名证书加进**系统级信任链**，任何用它的私钥签的代码
+> 都会被信任。私钥目前只授权给 `/usr/bin/codesign` 使用，但这是个真实的安全取舍。
+
 <details>
 <summary>手工做法（不想跑脚本的话）</summary>
 
