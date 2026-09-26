@@ -537,6 +537,15 @@ open /Applications/Paste.app
 - 开机自启注册的是启动时的那个 bundle 路径，所以务必先用 `install` 装到
   `/Applications` 再开启。
 
+## 深入阅读
+
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) —— 这个项目**为什么这么写**。
+
+不是复述代码做了什么，而是解释那些「不这么写就一定出问题」的地方，包括：
+为什么必须关掉 App Nap、为什么提交要用「画面上高亮的那条」而不是模型值、
+为什么 `strip` 必须在签名之前、为什么 dmg 压缩格式试过更小的却没用。
+每条都是实测踩出来的，附原始报错信息。
+
 ## 许可
 
 [MIT](LICENSE)
